@@ -11,19 +11,32 @@ UserLoginDialog::UserLoginDialog(QWidget *parent) :
 
     ui->passwordEdit->setEchoMode(QLineEdit::Password);
 
+    // 点击确定键
     connect(ui->okButton, &QPushButton::clicked, [=]() mutable {
-        userManager.addUser(ui->nameEdit->text().toStdString(),
-                            ui->passwordEdit->text().toStdString());
-        userManager.saveUsers();
+        if(userManager.judgeUser(ui->nameEdit->text().toStdString(),
+                                 ui->passwordEdit->text().toStdString()))
+        {
+            // 登录成功
+            //userManager.setCurrentUserByUserName(ui->nameEdit->text().toStdString());
+        }
+        else
+        {
+            // 登录失败
+            // TO-DO : GUI
+        }
+
         ui->nameEdit->setText("");
         ui->passwordEdit->setText("");
         this->exec();
     });
 
+    // 点击取消键
     connect(ui->cancelButton, &QPushButton::clicked, [=]() mutable {
+
         ui->nameEdit->setText("");
         ui->passwordEdit->setText("");
         this->exec();
+
     });
 
 }

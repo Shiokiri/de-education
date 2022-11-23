@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>935</width>
-    <height>566</height>
+    <width>938</width>
+    <height>615</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>180</x>
      <y>20</y>
      <width>80</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
@@ -32,7 +32,7 @@
      <x>280</x>
      <y>20</y>
      <width>80</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
@@ -42,9 +42,9 @@
   <widget class="QTextEdit" name="textEdit">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>320</x>
      <y>60</y>
-     <width>591</width>
+     <width>571</width>
      <height>431</height>
     </rect>
    </property>
@@ -55,7 +55,7 @@
      <x>60</x>
      <y>20</y>
      <width>91</width>
-     <height>16</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
@@ -67,7 +67,7 @@
     <rect>
      <x>40</x>
      <y>60</y>
-     <width>111</width>
+     <width>121</width>
      <height>431</height>
     </rect>
    </property>
@@ -94,7 +94,7 @@
     <rect>
      <x>180</x>
      <y>60</y>
-     <width>111</width>
+     <width>121</width>
      <height>431</height>
     </rect>
    </property>
@@ -116,43 +116,95 @@
     </property>
    </column>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="newNotebookButton">
    <property name="geometry">
     <rect>
      <x>40</x>
      <y>500</y>
-     <width>71</width>
-     <height>18</height>
+     <width>121</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
     <string>新建笔记本</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="newNoteButton">
    <property name="geometry">
     <rect>
      <x>180</x>
      <y>500</y>
-     <width>80</width>
-     <height>18</height>
+     <width>121</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
     <string>新建笔记</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="saveButton">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>320</x>
      <y>500</y>
-     <width>80</width>
-     <height>18</height>
+     <width>101</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
     <string>保存</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="deleteNotebookButton">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>530</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>删除当前笔记本</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="deleteNoteButton">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>530</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>删除当前笔记</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="changeNotebookNameButton">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>560</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>修改当前笔记本名称</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="changeNoteButton">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>560</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>修改当前笔记名称</string>
    </property>
   </widget>
  </widget>

@@ -24,6 +24,6 @@ private:
     UserRegisterDialog *userRegisterDialog;
     UserLoginDialog *userLoginDialog;
 
-    void update();
+    void Update();
 };
 #endif // WIDGET_H

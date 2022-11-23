@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
     std::cout << userManager.judgeUser("admin2","22") << std::endl;
     std::cout << userManager.judgeUser("admin2","@32123") << std::endl;
     */
-
     QApplication a(argc, argv);
     Widget w;
     w.show();

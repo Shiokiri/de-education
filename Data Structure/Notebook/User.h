@@ -19,12 +19,15 @@ private:
 public:
     User();
     User(string name, string password);
-    void setUserName(string name);
-    void setUserPassword(string password);
+    void setUserName(const string name);
+    void setUserPassword(const string password);
     void setNextUser(User* user);
-    string getUserName();
-    string getUserPassword();
-    User* getNextUser();
+    string getUserName() const;
+    string getUserPassword() const;
+    User* getNextUser() const;
+    void addNotebook(Notebook* notebook);
+    void deleteNotebookByNotebookName(const string name);
+    vector<Notebook*> getAllNotebooks() const;
 };
 
 #endif // USER_H

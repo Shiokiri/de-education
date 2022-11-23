@@ -40,7 +40,7 @@ bool UserManager::judgeUser(string name, string password)
     return false;
 }
 
-void UserManager::saveUsers()
+void UserManager::saveAllUsers()
 {
     current = head;
     while(current->getNextUser() != nullptr)
@@ -49,4 +49,9 @@ void UserManager::saveUsers()
         current = current->getNextUser();
     }
     std::cout << current->getUserName() << " " << current->getUserPassword() << std::endl;
+}
+
+void UserManager::setCurrentUserByUserName(string name)
+{
+
 }
