@@ -19,8 +19,6 @@ public:
     void setCurrentUserByUserName(string name);
     // 获取当前用户指针
     User* getCurrentUser();
-    // 获取当前用户所有笔记本
-    std::vector<Notebook*> getCurrentUserAllNotebooks();
     // 本地读取 存储
     void loadAllUsers();
     void saveAllUsers();

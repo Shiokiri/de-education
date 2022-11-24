@@ -4,6 +4,7 @@
 #include "UserRegisterDialog.h"
 #include "UserLoginDialog.h"
 #include "User.h"
+#include "UserManager.h"
 
 #include <QWidget>
 
@@ -18,12 +19,14 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
+    void UpdateUI();
+    void Debug();
 
 private:
     Ui::Widget *ui;
     UserRegisterDialog *userRegisterDialog;
     UserLoginDialog *userLoginDialog;
+    UserManager& userManager = UserManager::get_instance();
 
-    void Update();
 };
 #endif // WIDGET_H

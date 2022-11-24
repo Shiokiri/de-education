@@ -16,6 +16,7 @@ private:
     string userPassword;
     User *nextUser = nullptr;
     vector<Notebook*> notebooks;
+    Notebook* currentNotebook = nullptr;
 public:
     User();
     User(string name, string password);
@@ -28,6 +29,8 @@ public:
     void addNotebook(Notebook* notebook);
     void deleteNotebookByNotebookName(const string name);
     vector<Notebook*> getAllNotebooks() const;
+    void setCurrentNotebookByNotebookName(const string name);
+    Notebook* getCurrentNotebook() const;
 };
 
 #endif // USER_H

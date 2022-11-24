@@ -34,3 +34,18 @@ vector<Notebook*> User::getAllNotebooks() const
     return notebooks;
 }
 
+void User::setCurrentNotebookByNotebookName(const string name)
+{
+    for(auto notebook = notebooks.begin(); notebook != notebooks.end(); notebook++)
+    {
+        if((*notebook)->getNotebookName() == name)
+        {
+            currentNotebook = *notebook;
+            break;
+        }
+    }
+}
+Notebook* User::getCurrentNotebook() const
+{
+    return currentNotebook;
+}

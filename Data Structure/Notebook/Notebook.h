@@ -14,6 +14,7 @@ class Notebook
 private:
     string notebookName;
     vector<Note*> notes;
+    Note* currentNote = nullptr;
 public:
     Notebook();
     Notebook(string name);
@@ -30,6 +31,10 @@ public:
 
     // 获取所有笔记
     vector<Note*> getAllNotes() const;
+
+    void setCurrentNoteByNoteName(const string name);
+    Note* getCurrentNote() const;
+
 };
 
 #endif // NOTEBOOK_H

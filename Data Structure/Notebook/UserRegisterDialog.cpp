@@ -1,3 +1,4 @@
+#include "widget.h"
 #include "UserRegisterDialog.h"
 #include "ui_UserRegisterDialog.h"
 
@@ -7,6 +8,8 @@ UserRegisterDialog::UserRegisterDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //Widget *widget = static_cast<Widget*>(parent);
+
     ui->passwordEdit->setEchoMode(QLineEdit::Password);
 
     // 点击确定键
@@ -15,7 +18,7 @@ UserRegisterDialog::UserRegisterDialog(QWidget *parent) :
         userManager.addUser(ui->nameEdit->text().toStdString(),
                             ui->passwordEdit->text().toStdString());
 
-        userManager.saveAllUsers(); // debug
+        // userManager.saveAllUsers(); // debug
 
         ui->nameEdit->setText("");
         ui->passwordEdit->setText("");

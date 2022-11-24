@@ -41,3 +41,19 @@ vector<Note*> Notebook::getAllNotes() const
 {
     return notes;
 }
+
+void Notebook::setCurrentNoteByNoteName(const string name)
+{
+    for(auto note = notes.begin(); note != notes.end(); note++)
+    {
+        if((*note)->getNoteName() == name)
+        {
+            currentNote = *note;
+        }
+    }
+}
+
+Note* Notebook::getCurrentNote() const
+{
+    return currentNote;
+}

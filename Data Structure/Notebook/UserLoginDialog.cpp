@@ -1,3 +1,4 @@
+#include "widget.h"
 #include "UserLoginDialog.h"
 #include "ui_UserLoginDialog.h"
 
@@ -9,6 +10,8 @@ UserLoginDialog::UserLoginDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    Widget *widget = static_cast<Widget*>(parent);
+
     ui->passwordEdit->setEchoMode(QLineEdit::Password);
 
     // 点击确定键
@@ -17,7 +20,8 @@ UserLoginDialog::UserLoginDialog(QWidget *parent) :
                                  ui->passwordEdit->text().toStdString()))
         {
             // 登录成功
-            //userManager.setCurrentUserByUserName(ui->nameEdit->text().toStdString());
+            userManager.setCurrentUserByUserName(ui->nameEdit->text().toStdString());
+            widget->UpdateUI();
         }
         else
         {
@@ -27,7 +31,8 @@ UserLoginDialog::UserLoginDialog(QWidget *parent) :
 
         ui->nameEdit->setText("");
         ui->passwordEdit->setText("");
-        this->exec();
+        this->close();
+
     });
 
     // 点击取消键
@@ -35,7 +40,7 @@ UserLoginDialog::UserLoginDialog(QWidget *parent) :
 
         ui->nameEdit->setText("");
         ui->passwordEdit->setText("");
-        this->exec();
+        this->close();
 
     });
 
