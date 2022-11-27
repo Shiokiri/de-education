@@ -21,7 +21,7 @@ UserLoginDialog::UserLoginDialog(QWidget *parent) :
         {
             // 登录成功
             userManager.setCurrentUserByUserName(ui->nameEdit->text().toStdString());
-            widget->UpdateUI();
+            widget->UpdateUI(UpdateUISignal::GENERAL);
         }
         else
         {

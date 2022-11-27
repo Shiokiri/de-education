@@ -7,6 +7,10 @@
 #include "UserManager.h"
 
 #include <QWidget>
+enum class UpdateUISignal
+{
+    GENERAL, NOTEBOOKWIDGET, NOTEWIDGET
+};
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -19,14 +23,14 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
-    void UpdateUI();
-    void Debug();
+    void UpdateUI(UpdateUISignal);
+    void ScanUI();
 
 private:
     Ui::Widget *ui;
     UserRegisterDialog *userRegisterDialog;
     UserLoginDialog *userLoginDialog;
     UserManager& userManager = UserManager::get_instance();
-
+    QString notebookName, noteName;
 };
 #endif // WIDGET_H

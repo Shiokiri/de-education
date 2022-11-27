@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-class UserManager : public Singleton<UserManager>{
+class UserManager : public Singleton<UserManager> {
     friend class Singleton<UserManager>;
 public:
     UserManager(const UserManager&) = delete;
