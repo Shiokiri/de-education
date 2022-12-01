@@ -9,6 +9,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Haffuman.cpp \
+    Kmp.cpp \
     Note.cpp \
     Notebook.cpp \
     Singleton.cpp \
@@ -20,6 +22,8 @@ SOURCES += \
     widget.cpp
 
 HEADERS += \
+    Haffuman.h \
+    Kmp.h \
     Note.h \
     Notebook.h \
     Singleton.h \

@@ -5,6 +5,7 @@
 #include "UserLoginDialog.h"
 #include "User.h"
 #include "UserManager.h"
+#include "Kmp.h"
 
 #include <QWidget>
 enum class UpdateUISignal
@@ -25,12 +26,14 @@ public:
     ~Widget();
     void UpdateUI(UpdateUISignal);
     void ScanUI();
+    void LoginUpdate();
 
 private:
     Ui::Widget *ui;
     UserRegisterDialog *userRegisterDialog;
     UserLoginDialog *userLoginDialog;
     UserManager& userManager = UserManager::get_instance();
+    Kmp& kmp = Kmp::get_instance();
     QString notebookName, noteName;
 };
 #endif // WIDGET_H

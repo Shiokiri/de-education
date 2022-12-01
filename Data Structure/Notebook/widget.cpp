@@ -161,14 +161,59 @@ Widget::Widget(QWidget *parent)
         UpdateUI(UpdateUISignal::GENERAL);
     });
 
+    // 选中笔记本栏目
     connect(ui->notebookWidget, &QTableWidget::itemClicked, [=]() mutable {
         ScanUI();
         UpdateUI(UpdateUISignal::NOTEBOOKWIDGET);
     });
 
+    // 选中笔记栏目
     connect(ui->noteWidget, &QTableWidget::itemClicked, [=]() mutable {
         ScanUI();
         UpdateUI(UpdateUISignal::NOTEWIDGET);
+    });
+
+    connect(ui->searchButton, &QPushButton::clicked, [=]() mutable {
+        // 当前用户存在
+        if(User* currentUser = userManager.getCurrentUser();
+                currentUser != nullptr)
+        {
+            // 当前笔记本存在
+            if(Notebook *currentNotebook = currentUser->getCurrentNotebook();
+                    currentNotebook != nullptr)
+            {
+                // 更新笔记表格显示
+                ui->noteWidget->setRowCount(0);
+                std::vector<Note*> notes = currentNotebook->getAllNotes();
+                int currentLine = 0;
+                for(auto note = notes.begin(); note != notes.end(); note++)
+                {
+                    auto check = [=]() mutable -> bool
+                    {
+                        string sourceText;
+                        string modeText = ui->searchEdit->text().toStdString();
+                        if(ui->searchComboBox->currentText().toStdString() == "标题")
+                        {
+                            sourceText = (*note)->getNoteName();
+                        }
+                        else if(ui->searchComboBox->currentText().toStdString() == "内容")
+                        {
+                            sourceText = (*note)->getText();
+                        }
+                        return kmp.judgeSubString(sourceText, modeText);
+                    };
+                    if(check())
+                    {
+                        ui->noteWidget->insertRow(currentLine);
+                        ui->noteWidget->setItem(currentLine, 0,
+                                                        new QTableWidgetItem(
+                                                            QString::fromStdString(
+                                                            (*note)->getNoteName())));
+                        currentLine += 1;
+                    }
+                }
+            }
+        }
     });
 }
 
@@ -238,14 +283,14 @@ void Widget::UpdateUI(UpdateUISignal updateUISignal)
 
 void Widget::ScanUI()
 {
-    QList<QTableWidgetItem*>notebookItems = ui->notebookWidget->selectedItems();
+    QList<QTableWidgetItem*> notebookItems = ui->notebookWidget->selectedItems();
     int count = notebookItems.count();
     for(int i = 0; i < count; i++)
     {
         QTableWidgetItem *notebookItem = notebookItems.at(i);
         notebookName = notebookItem->text();
     }
-    QList<QTableWidgetItem*>noteItems = ui->noteWidget->selectedItems();
+    QList<QTableWidgetItem*> noteItems = ui->noteWidget->selectedItems();
     count = noteItems.count();
     for(int i = 0; i < count; i++)
     {
@@ -264,4 +309,10 @@ void Widget::ScanUI()
             notebook->setCurrentNoteByNoteName(noteName.toStdString());
         }
     }
+}
+
+void Widget::LoginUpdate()
+{
+    ui->notebookWidget->setRowCount(0);
+    ui->noteWidget->setRowCount(0);
 }
