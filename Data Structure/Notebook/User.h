@@ -15,7 +15,7 @@ private:
     string userName;
     string userPassword;
     User *nextUser = nullptr;
-    vector<Notebook*> notebooks;
+    std::vector<Notebook*> notebooks;
     Notebook* currentNotebook = nullptr;
 public:
     User();
