@@ -5,6 +5,7 @@
 #ifndef SLR1_LEXER_H
 #define SLR1_LEXER_H
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>

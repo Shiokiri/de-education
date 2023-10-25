@@ -2,8 +2,10 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <memory>
 
 #include "lexer.h"
+#include "parser.h"
 
 int main() {
     std::string contents;
@@ -19,11 +21,10 @@ int main() {
         return 0;
     }
 
-    auto tokens = lexicalAnalysis(contents);
+    const auto tokens = lexicalAnalysis(contents);
 
-    for(const auto& token : tokens) {
-        std::cout << token.first << " " << token.second << std::endl;
-    }
+    std::unique_ptr<Parser> parser = std::make_unique<Parser>();
+    parser->syntaxAnalysis(std::move(tokens));
 
     return 0;
 }

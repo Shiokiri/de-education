@@ -5,45 +5,42 @@
 #include "lexer.h"
 
 auto lexicalAnalysis(std::string code) -> std::vector<std::pair<std::string, std::string>>  {
-    std::vector<std::string> keywords = {"fun", "int", "string", "return", "if", "while"};
-    std::vector<std::string> operators = {"+", "-", "*", "/", "="};
+    std::vector<std::string> keywords = {"int", "string", "return", "if", "while"};
+    std::vector<std::string> operators = {"+", "-", "*", "/", "=", "=="};
     std::vector<std::string> delimiters = {"{", "}", "(", ")", ";"};
 
     // first: token
     // second: type { keywords, operators, delimiters, literal, identifier }
     std::vector<std::pair<std::string, std::string>> tokens = {};
 
-    auto checkCharInStringVector = [](char ch, const std::vector<std::string> &stringVector) {
-        for(const auto& str : stringVector) {
-            if(str.find(ch) != std::string::npos) {
-                return true;
-            }
-        }
-        return false;
+    auto checkStringInStringVector =
+        [](std::string searchString,const std::vector<std::string> &stringVector) -> bool {
+        auto it = std::find(stringVector.begin(), stringVector.end(), searchString);
+        return it != stringVector.end();
     };
-    auto checkStringInStringVector = [](std::string s,const std::vector<std::string> &stringVector) {
-        for(const auto& str : stringVector) {
-            if(s == str) {
-                return true;
-            }
-        }
-        return false;
-    };
-
     int index = 0;
 
     while(index < code.length()) {
+        std::string codeIndex(1, code[index]);
+        // space
         if(code[index] == ' ') {
             index++;
             continue;
         }
-        // delimiters
-        else if(checkCharInStringVector(code[index], operators)) {
-            tokens.push_back(std::make_pair(std::string(1, code[index]), "operators"));
+        // delimiters length = 2
+        else if(index+1 < code.length() && checkStringInStringVector(codeIndex + code[index+1], operators)) {
+            tokens.push_back(std::make_pair(codeIndex + code[index+1], "operators"));
+            index += 2;
         }
-        // operators
-        else if(checkCharInStringVector(code[index], delimiters)) {
+        // delimiters length = 1
+        else if(checkStringInStringVector(codeIndex, operators)) {
+            tokens.push_back(std::make_pair(std::string(1, code[index]), "operators"));
+            index++;
+        }
+        // operators length = 1
+        else if(checkStringInStringVector(codeIndex, delimiters)) {
             tokens.push_back(std::make_pair(std::string(1, code[index]), "delimiters"));
+            index++;
         }
         // literal - string
         else if(code[index] == ' " ') {
@@ -53,7 +50,7 @@ auto lexicalAnalysis(std::string code) -> std::vector<std::pair<std::string, std
                 str += code[index];
                 index++;
             }
-            tokens.push_back(std::make_pair(str, "literal-string"));
+            tokens.push_back(std::make_pair(str, "literal"));
         }
         // literal - int
         else if(isdigit(code[index])) {
@@ -62,7 +59,7 @@ auto lexicalAnalysis(std::string code) -> std::vector<std::pair<std::string, std
                 str += code[index];
                 index++;
             }
-            tokens.push_back(std::make_pair(str, "literal-int"));
+            tokens.push_back(std::make_pair(str, "literal"));
         }
         // keywords / identifier
         else if(isalpha(code[index])){
@@ -78,7 +75,9 @@ auto lexicalAnalysis(std::string code) -> std::vector<std::pair<std::string, std
                 tokens.push_back(std::make_pair(str, "identifier"));
             }
         }
-        index++;
+        else {
+            index++;
+        }
     }
 
     return tokens;
