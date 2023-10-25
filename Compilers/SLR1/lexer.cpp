@@ -7,7 +7,7 @@
 auto lexicalAnalysis(std::string code) -> std::vector<std::pair<std::string, std::string>>  {
     std::vector<std::string> keywords = {"int", "string", "return", "if", "while"};
     std::vector<std::string> operators = {"+", "-", "*", "/", "=", "=="};
-    std::vector<std::string> delimiters = {"{", "}", "(", ")", ";"};
+    std::vector<std::string> delimiters = {"{", "}", "(", ")", ",", ";"};
 
     // first: token
     // second: type { keywords, operators, delimiters, literal, identifier }

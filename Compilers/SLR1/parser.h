@@ -5,14 +5,25 @@
 #ifndef SLR1_PARSER_H
 #define SLR1_PARSER_H
 
+#include <unordered_map>
+#include <algorithm>
 #include <iostream>
 #include <vector>
+#include <set>
 
 struct Product {
-    std::string name;
-    std::vector<std::string> components;
+    std::string L;
+    std::vector<std::string> R;
 
-    Product(const std::string& n, const std::vector<std::string>& comps) : name(n), components(comps) {}
+    Product(const std::string& L, const std::vector<std::string>& R) : L(L), R(R) {}
+
+    void printProduct() const {
+        std::cout << L << " -> ";
+        for(const auto& r: R) {
+            std::cout << r << " ";
+        }
+        std::cout << std::endl;
+    }
 };
 
 struct Grammar {
@@ -20,20 +31,41 @@ struct Grammar {
     std::vector<std::string> V;
     std::vector<std::string> T;
     std::vector<Product> P;
+
+    void printGrammar() const {
+        std::cout << "G: " << std::endl;
+        std::cout << "S: " << std::endl << S << std::endl;
+        std::cout << "V: " << std::endl;
+        for(const auto& v: V) {
+            std::cout << v + " ";
+        }
+        std::cout << std::endl << "T: " << std::endl;
+        for(const auto& t: T) {
+            std::cout << t + " ";
+        }
+        std::cout << std::endl << "P: " << std::endl;
+        for(const auto& p: P) {
+            p.printProduct();
+        }
+    }
 };
 
 class Parser {
 private:
     Grammar G;
+    const std::vector<std::pair<std::string, std::string>>&& tokens;
+    std::unordered_map<std::string, std::set<std::string>> first;
+
 public:
-    Parser() {
+    Parser(const std::vector<std::pair<std::string, std::string>>&& tokens)
+    : tokens(std::move(tokens))
+    {
         G.S = "Program";
         G.V = {"Program", "FunctionDeclaration", "ArgumentList", "BlockStatement",
                "Type", "ArithmeticExpression", "BoolExpression",
                "ArithmeticOperator", "ComparisonOperator"};
         G.T = {"identifier", "literal", "(", ")", "{", "}", ",", ";", "=",
                "while", "if", "else", "return", "int", "string","==", "-", "+", "*", "/"};
-
         G.P = {
                 {"BlockStatement", {"BlockStatement", "BlockStatement"}},
                 {"BlockStatement", {"Type", "identifier", ";"}},
@@ -63,9 +95,16 @@ public:
                 {"ArithmeticOperator", {"-"}},
                 {"ArithmeticOperator", {"*"}},
                 {"ArithmeticOperator", {"/"}} };
+
+        // print G
+        G.printGrammar();
+
     };
 
-    void syntaxAnalysis(const std::vector<std::pair<std::string, std::string>>&& tokens);
+    void syntaxAnalysis();
+    void getFirst();
+    void getFollow();
+    void getSLR1Table();
 };
 
 

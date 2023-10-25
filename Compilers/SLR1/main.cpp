@@ -22,9 +22,15 @@ int main() {
     }
 
     const auto tokens = lexicalAnalysis(contents);
+    // print tokens
+    std::cout << "Tokens:" << std::endl;
+    for(const auto& token : tokens) {
+        std::cout << "[" + token.first + " " + token.second + "] ";
+    }
+    std::cout << std::endl;
 
-    std::unique_ptr<Parser> parser = std::make_unique<Parser>();
-    parser->syntaxAnalysis(std::move(tokens));
+    std::unique_ptr<Parser> parser = std::make_unique<Parser>(std::move(tokens));
+    parser->syntaxAnalysis();
 
     return 0;
 }
