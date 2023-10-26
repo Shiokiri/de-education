@@ -12,6 +12,9 @@
 
 #include <cctype>
 
+#include "constants.h"
+#include "utils.h"
+
 auto lexicalAnalysis(std::string) -> std::vector<std::pair<std::string, std::string>>;
 
 #endif //SLR1_LEXER_H

@@ -3,4 +3,4 @@ project(SLR1)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(SLR1 main.cpp lexer.h lexer.cpp parser.cpp parser.h)
+add_executable(SLR1 main.cpp lexer.h lexer.cpp parser.cpp parser.h constants.h utils.h utils.cpp)

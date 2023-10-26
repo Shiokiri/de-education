@@ -12,6 +12,9 @@
 #include <vector>
 #include <set>
 
+#include "constants.h"
+#include "utils.h"
+
 struct Product {
     std::string L;
     // TODO: vector -> set
@@ -56,9 +59,14 @@ struct Grammar {
 class Parser {
 private:
     Grammar G;
-    const std::string EPSILON = "ε";
-    const std::vector<std::pair<std::string, std::string>>&& tokens;
-    std::unordered_map<std::string, std::set<std::string>> first;
+    const std::vector<std::pair<std::string, std::string>> tokens;
+    using umap_set = std::unordered_map<std::string, std::set<std::string>>;
+    umap_set first, follow;
+    using pair_umap = std::unordered_map<std::pair<std::string, std::string>, std::string,
+        decltype([](const std::pair<std::string, std::string> &p) {
+        return std::hash<std::string>{}(p.first) ^ std::hash<std::string>{}(p.second);
+    })>;
+    pair_umap actionTable, gotoTable;
 
 public:
     Parser(const std::vector<std::pair<std::string, std::string>>&& tokens)
@@ -68,8 +76,11 @@ public:
         G.V = {"Program", "FunctionDeclaration", "ArgumentList", "BlockStatement",
                "Type", "ArithmeticExpression", "BoolExpression",
                "ArithmeticOperator", "ComparisonOperator"};
-        G.T = {"identifier", "literal", "(", ")", "{", "}", ",", ";", "=",
-               "while", "if", "else", "return", "int", "string", "==", "!=", "-", "+", "*", "/"};
+        G.T = {"identifier", "literal",
+               "(", ")", "{", "}", ",", ";", "=",
+               "while", "if", "else", "return",
+               "int", "string",
+               "==", "!=", "-", "+", "*", "/"};
         G.P = { {"Program", {"FunctionDeclaration"}},
 
                 {"FunctionDeclaration", {"FunctionDeclaration", "FunctionDeclaration"}},

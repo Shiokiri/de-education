@@ -6,6 +6,8 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include "constants.h"
+#include "utils.h"
 
 int main() {
     std::string contents;

@@ -5,8 +5,9 @@
 #include "lexer.h"
 
 auto lexicalAnalysis(std::string code) -> std::vector<std::pair<std::string, std::string>>  {
+    // TODO: vector -> set
     std::vector<std::string> keywords = {"int", "string", "return", "if", "while"};
-    std::vector<std::string> operators = {"+", "-", "*", "/", "=", "=="};
+    std::vector<std::string> operators = {"+", "-", "*", "/", "=", "==", "!="};
     std::vector<std::string> delimiters = {"{", "}", "(", ")", ",", ";"};
 
     // first: token
