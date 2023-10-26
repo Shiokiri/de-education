@@ -57,7 +57,6 @@ class Parser {
 private:
     Grammar G;
     const std::string EPSILON = "ε";
-    // TODO: vector -> set
     const std::vector<std::pair<std::string, std::string>>&& tokens;
     std::unordered_map<std::string, std::set<std::string>> first;
 
@@ -70,8 +69,17 @@ public:
                "Type", "ArithmeticExpression", "BoolExpression",
                "ArithmeticOperator", "ComparisonOperator"};
         G.T = {"identifier", "literal", "(", ")", "{", "}", ",", ";", "=",
-               "while", "if", "else", "return", "int", "string","==", "-", "+", "*", "/"};
-        G.P = { {"BlockStatement", {"BlockStatement", "BlockStatement"}},
+               "while", "if", "else", "return", "int", "string", "==", "!=", "-", "+", "*", "/"};
+        G.P = { {"Program", {"FunctionDeclaration"}},
+
+                {"FunctionDeclaration", {"FunctionDeclaration", "FunctionDeclaration"}},
+                {"FunctionDeclaration", {"Type", "identifier", "(", ")", "{", "BlockStatement", "}"}},
+                {"FunctionDeclaration", {"Type", "identifier", "(", "ArgumentList", ")", "{", "BlockStatement", "}"}},
+
+                {"ArgumentList", {"Type", "identifier"}},
+                {"ArgumentList", {"Type", "identifier", ",", "ArgumentList"}},
+
+                {"BlockStatement", {"BlockStatement", "BlockStatement"}},
                 {"BlockStatement", {"Type", "identifier", ";"}},
                 {"BlockStatement", {"Type", "identifier", "=", "ArithmeticExpression", ";"}},
                 {"BlockStatement", {"identifier", "=", "ArithmeticExpression", ";"}},
@@ -94,6 +102,7 @@ public:
                 {"BoolExpression", {"(", "BoolExpression", ")"}},
 
                 {"ComparisonOperator", {"=="}},
+                {"ComparisonOperator", {"!="}},
 
                 {"ArithmeticOperator", {"+"}},
                 {"ArithmeticOperator", {"-"}},

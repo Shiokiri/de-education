@@ -11,12 +11,6 @@ void Parser::syntaxAnalysis() {
 }
 
 void Parser::getFirst() {
-    auto checkStringInStringVector =
-        [](std::string searchString,const std::vector<std::string> &stringVector) -> bool {
-        auto it = std::find(stringVector.begin(), stringVector.end(), searchString);
-        return it != stringVector.end();
-    };
-
     // Initialize
     // V => (V, [])
     for(const auto& v: G.V) {
@@ -64,7 +58,7 @@ void Parser::getFirst() {
                         first[p.L].insert(s);
                     }
                 }
-                changed = first[p.L].size() != size;
+                changed = first[p.L].size() != size ? true : changed;
             }
 
         }
