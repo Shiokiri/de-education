@@ -13,6 +13,7 @@
 
 struct Product {
     std::string L;
+    // TODO: vector -> set
     std::vector<std::string> R;
 
     Product(const std::string& L, const std::vector<std::string>& R) : L(L), R(R) {}
@@ -27,6 +28,7 @@ struct Product {
 };
 
 struct Grammar {
+    // TODO: vector -> set
     std::string S;
     std::vector<std::string> V;
     std::vector<std::string> T;
@@ -53,6 +55,8 @@ struct Grammar {
 class Parser {
 private:
     Grammar G;
+    const std::string EPSILON = "ε";
+    // TODO: vector -> set
     const std::vector<std::pair<std::string, std::string>>&& tokens;
     std::unordered_map<std::string, std::set<std::string>> first;
 
@@ -66,8 +70,7 @@ public:
                "ArithmeticOperator", "ComparisonOperator"};
         G.T = {"identifier", "literal", "(", ")", "{", "}", ",", ";", "=",
                "while", "if", "else", "return", "int", "string","==", "-", "+", "*", "/"};
-        G.P = {
-                {"BlockStatement", {"BlockStatement", "BlockStatement"}},
+        G.P = { {"BlockStatement", {"BlockStatement", "BlockStatement"}},
                 {"BlockStatement", {"Type", "identifier", ";"}},
                 {"BlockStatement", {"Type", "identifier", "=", "ArithmeticExpression", ";"}},
                 {"BlockStatement", {"identifier", "=", "ArithmeticExpression", ";"}},

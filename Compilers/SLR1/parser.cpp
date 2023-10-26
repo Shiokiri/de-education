@@ -22,36 +22,51 @@ void Parser::getFirst() {
     for(const auto& v: G.V) {
         first[v] = { };
     }
-    // T -> (T, [T])
+    // 1 X in T => FIRST[X] = {X}
+    // T => (T, [T])
     for(const auto& t: G.T) {
         first[t] = { t };
     }
-    // 若右边第一个符号是终结符或 ε，则直接将其加入 First
-    // P.R[0] in T || P.R[0] == ε -> (P.L, [P.R[0]])
+    // 3 (X -> ε) => ε in FIRST[X]
+    // ε in P.R => (P.L, ε)
     for(const auto& p: G.P) {
-        if(checkStringInStringVector(p.R[0], G.T) || p.R[0] == "ε") {
-            first[p.L].insert(p.R[0]);
+        if(std::find(p.R.begin(), p.R.end(),EPSILON) != p.R.end()) {
+            first[p.L].insert(EPSILON);
         }
     }
     bool changed = true;
     while(changed) {
         changed = false;
-        // 若右边第一个符号是非终结符，则将其 First 集的的非 ε 元素加入 First
+        // 2 X -> Y(1-k), X in V
+        // ε in FIRST[Y(1-i-1)] && a in FIRST[Y(i)] => a in FIRST(X)
+        // ε in FIRST[Y(1-k)] => ε in FIRST[X]
         for(const auto& p: G.P) {
-            if(checkStringInStringVector(p.R[0], G.V)) {
+            auto findEpsilonIndex = [=]() -> int {
+                for (int i = 0; i <= p.R.size() - 1; i++) {
+                    auto first_Yi = first[p.R[i]];
+                    // ε not in FIRST[Y(1-i-1)]
+                    if(first_Yi.find(EPSILON) == first_Yi.end()) {
+                        return i;
+                    }
+                }
+                // ε in FIRST[Y(1-k)]
+                return -1;
+            };
+            const int index = findEpsilonIndex();
+            if(index == -1) {
+                first[p.L].insert(EPSILON);
+                changed = true;
+            }
+            else {
                 const int size = first[p.L].size();
-                for(const auto& s: first[p.R[0]]) {
-                    if(s != "ε") {
+                for(const auto& s: first[p.R[index]]) {
+                    if(s != EPSILON) {
                         first[p.L].insert(s);
                     }
                 }
-                if(first[p.L].size() != size) {
-                    changed = true;
-                }
+                changed = first[p.L].size() != size;
             }
-            // 若右边第一个符号是非终结符而且紧随其后的是很多个非终结符，这个时候就要注意是否有 ε
 
-            // 若第 i 个非终结符的 First 集有 ε  ，则可将第 i+1 个非终结符去除 ε  的 First 集加入 First（X）。
         }
     }
 
@@ -60,6 +75,7 @@ void Parser::getFirst() {
     for (const auto& pair : first) {
         std::cout << "FIRST[\"" + pair.first + "\"]: { ";
         for(const auto& s: pair.second ) {
+            // TODO: std::quoted
             std::cout << "\"" + s + "\" ";
         }
         std::cout << "}"<< std::endl;
