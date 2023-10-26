@@ -18,7 +18,7 @@ void Parser::getFirst() {
     };
 
     // Initialize
-    // V -> (V, [])
+    // V => (V, [])
     for(const auto& v: G.V) {
         first[v] = { };
     }
@@ -70,13 +70,12 @@ void Parser::getFirst() {
         }
     }
 
-    // print FIRST SET
+    // print FIRST set
     std::cout << "FIRST set: " << std::endl;
     for (const auto& pair : first) {
-        std::cout << "FIRST[\"" + pair.first + "\"]: { ";
+        std::cout << "FIRST[" << std::quoted(pair.first) << "]: { ";
         for(const auto& s: pair.second ) {
-            // TODO: std::quoted
-            std::cout << "\"" + s + "\" ";
+            std::cout << std::quoted(s) << " ";
         }
         std::cout << "}"<< std::endl;
     }
