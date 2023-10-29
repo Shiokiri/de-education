@@ -95,7 +95,7 @@ void Parser::getFollow() {
                                     // 2 A -> αBβ => a != ε in FIRST[β], a in FOLLOW[B]
                                     // aB[sentence] find first of sentence
                                     for(const auto &f: first[p.R[j]]) {
-                                        follow[p.L].insert(f); // f != ε already
+                                        follow[p.R[i]].insert(f); // f != ε already
                                     }
                                     return;
                                 }
@@ -107,7 +107,7 @@ void Parser::getFollow() {
                         }();
                     }
                     else {
-                        // 3 A -> αB => ε in FOLLOW[A], a in FOLLOW[B]
+                        // 3 A -> αB => a in FOLLOW[A], a in FOLLOW[B]
                         for(const auto &f: follow[p.L]) {
                             follow[p.R[i]].insert(f);
                         }
