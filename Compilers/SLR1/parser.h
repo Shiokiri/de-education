@@ -20,8 +20,6 @@ struct Product {
     // TODO: vector -> set
     std::vector<std::string> R;
 
-    Product(const std::string& L, const std::vector<std::string>& R) : L(L), R(R) {}
-
     void printProduct() const {
         std::cout << L << " -> ";
         for(const auto& r: R) {
@@ -60,13 +58,13 @@ class Parser {
 private:
     Grammar G;
     const std::vector<std::pair<std::string, std::string>> tokens;
-    using umap_set = std::unordered_map<std::string, std::set<std::string>>;
-    umap_set first, follow;
-    using pair_umap = std::unordered_map<std::pair<std::string, std::string>, std::string,
+    using string_umap_set = std::unordered_map<std::string, std::set<std::string>>;
+    string_umap_set first, follow;
+    using pair_umap_string = std::unordered_map<std::pair<std::string, std::string>, std::string,
         decltype([](const std::pair<std::string, std::string> &p) {
         return std::hash<std::string>{}(p.first) ^ std::hash<std::string>{}(p.second);
     })>;
-    pair_umap actionTable, gotoTable;
+    pair_umap_string actionTable, gotoTable;
 
 public:
     Parser(const std::vector<std::pair<std::string, std::string>>&& tokens)

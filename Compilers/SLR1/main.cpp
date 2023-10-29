@@ -25,7 +25,7 @@ int main() {
 
     const auto tokens = lexicalAnalysis(contents);
     // print tokens
-    std::cout << "Tokens:" << std::endl;
+    utils::coutWithColor("Tokens:", constants::color::RED_TEXT) << std::endl;
     for(const auto& token : tokens) {
         std::cout << "[" + token.first + " " + token.second + "] ";
     }
