@@ -58,7 +58,7 @@ struct Grammar {
             std::cout << t + " ";
         }
         std::cout << std::endl;
-        utils::coutWithColor("P: ", constants::color::GREEN_TEXT);
+        utils::coutWithColor("P: ", constants::color::GREEN_TEXT) << std::endl;
         int index = 0;
         for(const auto& p: P) {
             std::cout << index++ << " ";

@@ -23,6 +23,7 @@ void Parser::syntaxAnalysis() {
     }
     std::cout << std::endl;
     // begin analysis
+    utils::coutWithColor("Syntax Analysis: ", constants::color::RED_TEXT) << std::endl;
     auto getTokenType = [this](int index) -> std::string {
         if(index >= tokens.size()) return tokens[tokens.size()-1].first;
         std::pair pair = tokens[index];
@@ -93,7 +94,7 @@ void Parser::syntaxAnalysis() {
             GRAMMAR_ERROR:
             // error
             utils::coutWithColor("------------------", constants::color::YELLOW_TEXT) << std::endl;
-            utils::coutWithColor("--grammar error!--", constants::color::YELLOW_TEXT) << std::endl;
+            utils::coutWithColor("------error!------", constants::color::YELLOW_TEXT) << std::endl;
             utils::coutWithColor("------------------", constants::color::YELLOW_TEXT) << std::endl;
             break;
         }
@@ -275,7 +276,7 @@ void Parser::getSLR1Table() {
     std::cout << std::left << std::setw(5) << "#";
     for(const auto& v: G.V) {
         if(v != "Program'") {
-            std::cout << std::left << std::setw(21) << v;
+            std::cout << std::left << std::setw(20) << v;
         }
     }
     std::cout << std::endl;
@@ -283,7 +284,7 @@ void Parser::getSLR1Table() {
         std::cout << std::setw(5) << i;
         for(const auto& v: G.V) {
             if(v != "Program'") {
-                std::cout << std::left << std::setw(21) << gotoTable[{std::to_string(i), v}];
+                std::cout << std::left << std::setw(20) << gotoTable[{std::to_string(i), v}];
             }
         }
         std::cout << std::endl;
