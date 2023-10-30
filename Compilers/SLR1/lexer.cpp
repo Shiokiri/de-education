@@ -40,13 +40,14 @@ auto lexicalAnalysis(std::string code) -> std::vector<std::pair<std::string, std
             index++;
         }
         // literal - string
-        else if(code[index] == ' " ') {
+        else if(code[index] == '"') {
             index++;
             std::string str;
-            while(code[index] != ' " ') {
+            while(code[index] != '"') {
                 str += code[index];
                 index++;
             }
+            index++;
             tokens.push_back(std::make_pair(str, "literal"));
         }
         // literal - int

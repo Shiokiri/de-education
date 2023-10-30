@@ -8,13 +8,74 @@ void Parser::syntaxAnalysis() {
     getFirst();
     getFollow();
     getSLR1Table();
-    // begin analysis
+    // initialization
     tokens.push_back({"$", "$"});
-
+    std::stack<std::string> stack;
+    stack.push("0");
+    int tokenIndex = 0;
+    int step = 1;
+    // begin analysis
+    auto getNextTokenType = [&]() -> std::string {
+        if(tokenIndex == tokens.size()) return tokens[tokens.size()-1].first;
+        std::pair pair = tokens[tokenIndex++];
+        if(pair.second == "identifier" || pair.second == "literal") {
+            return pair.second;
+        } else {
+            return pair.first;
+        }
+    };
+    std::string a = getNextTokenType();
+    while(true) {
+        std::string s = stack.top();
+        utils::coutWithColor("Step: "+std::to_string(step++), constants::color::CARMINE_TEXT) << std::endl;
+        utils::coutWithColor("Status: ", constants::color::BLUE_TEXT);
+        std::stack<std::string> tempStack;
+        while(!stack.empty()) {
+            tempStack.push(stack.top());
+            stack.pop();
+        }
+        while(!tempStack.empty()) {
+            std::cout << tempStack.top() << " ";
+            stack.push(tempStack.top());
+            tempStack.pop();
+        }
+        std::cout << std::endl;
+        std::cout << actionTable[{s, a}] << std::endl;
+        if(auto act = actionTable[{s, a}]; act[0] == 's') {
+            // shift
+            stack.push(act.erase(0, 1));
+            a = getNextTokenType();
+        } else if(act[0] == 'r') {
+            // reduce
+            Product p = G.P[std::stoi(act.erase(0, 1))]; // shift A -> β => pop|β|
+            for(int i = 0; i < p.R.size(); i++) {
+                if(!stack.empty()) {
+                    stack.pop();
+                } else {
+                    // error
+                    goto GRAMMAR_ERROR;
+                }
+            }
+            std::string t = stack.top();
+            stack.push(gotoTable[{t, p.L}]); // GOTO[t, A]
+            p.printProduct();
+        } else if(act == "acc") {
+            // accept
+            utils::coutWithColor("complete syntax analysis", constants::color::CYAN_TEXT) << std::endl;
+            break;
+        } else {
+            GRAMMAR_ERROR:
+            // error
+            utils::coutWithColor("------------------", constants::color::YELLOW_TEXT) << std::endl;
+            utils::coutWithColor("--grammar error!--", constants::color::YELLOW_TEXT) << std::endl;
+            utils::coutWithColor("------------------", constants::color::YELLOW_TEXT) << std::endl;
+            break;
+        }
+    }
 }
 
 void Parser::getFirst() {
-    // Initialize
+    // initialization
     // V => (V, [])
     for (const auto& v: G.V) {
         first[v] = {};
@@ -76,7 +137,7 @@ void Parser::getFirst() {
 }
 
 void Parser::getFollow() {
-    // Initialize
+    // initialization
     // V => (V, [])
     for (const auto& v: G.V) {
         follow[v] = {};
@@ -136,7 +197,7 @@ void Parser::getSLR1Table() {
     G.V.push_back(G.S);
     G.P.push_back({"Program'", {"Program"}});
     // find closure of (Program' -> ·Program)
-    typeI start = {{item(G.P.size()-1,0)}}; // Program' -> ·Program
+    typeI start = {{Item(G.P.size()-1,0)}}; // Program' -> ·Program
     // 1 find C of G'
     typeC C = {{start.closure(G)}};
     bool changed = true;
