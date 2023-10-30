@@ -8,6 +8,9 @@ void Parser::syntaxAnalysis() {
     getFirst();
     getFollow();
     getSLR1Table();
+    // begin analysis
+    tokens.push_back({"$", "$"});
+
 }
 
 void Parser::getFirst() {
@@ -35,7 +38,7 @@ void Parser::getFirst() {
         // ε in FIRST[Y(1-i-1)] => a != ε in FIRST[Y(i)], a in FIRST(X)
         // ε in FIRST[Y(1-k)] => ε in FIRST[X]
         for (const auto& p: G.P) {
-            auto findEpsilonIndex = [&]() -> int {
+            auto findEpsilonIndex = [&]() {
                 for (int i = 0; i <= p.R.size() - 1; i++) {
                     auto first_Yi = first[p.R[i]];
                     // ε not in FIRST[Y(1-i-1)]
@@ -59,7 +62,6 @@ void Parser::getFirst() {
                 }
                 changed = first[p.L].size() != size || changed;
             }
-
         }
     }
     // print FIRST set
@@ -100,7 +102,7 @@ void Parser::getFollow() {
                                     return;
                                 }
                             }
-                            // 3 A -> αBβ && ε in FIRST[β] => ε in FOLLOW[A], a in FOLLOW[B]
+                            // 3 A -> αBβ && ε in FIRST[β] => a in FOLLOW[A], a in FOLLOW[B]
                             for(const auto &f: follow[p.L]) {
                                 follow[p.R[i]].insert(f);
                             }
@@ -129,5 +131,117 @@ void Parser::getFollow() {
 }
 
 void Parser::getSLR1Table() {
-
+    // augmented grammar G'
+    G.S = "Program'";
+    G.V.push_back(G.S);
+    G.P.push_back({"Program'", {"Program"}});
+    // find closure of (Program' -> ·Program)
+    typeI start = {{item(G.P.size()-1,0)}}; // Program' -> ·Program
+    // 1 find C of G'
+    typeC C = {{start.closure(G)}};
+    bool changed = true;
+    while(changed) {
+        changed = false;
+        const int size = C.I.size();
+        std::set<typeI> temp = {};
+        for(auto& I: C.I) {
+            for(const auto& X: G.V) {
+                temp.insert(I.go(G, X));
+            }
+            for(const auto& X: G.T) {
+                temp.insert(I.go(G, X));
+            }
+        }
+        for(auto& I: temp) {
+            if(I.items.size() != 0) {
+                C.I.insert({I.items});
+            }
+        }
+        changed = C.I.size() != size || changed;
+    }
+    std::map<typeI, int> IIndex;
+    int IIndexSize = 0;
+    for(auto & I: C.I) {
+        IIndex[I] = IIndexSize++;
+    }
+    // print C
+    utils::coutWithColor("C = {I1, I2, ..., In}: ", constants::color::RED_TEXT) << std::endl;
+    for(auto & I: C.I) {
+        I.print(IIndex[I]);
+        for(const auto & item: I.items) {
+            auto p = G.P[item.pIndex];
+            p.printProduct(item.dotIndex);
+        }
+    }
+    // 2 find GOTO
+    for(auto & I: C.I) {
+        for(const auto& v: G.V) {
+            const int i = IIndex[I];
+            if(const auto go = I.go(G, v); IIndex.find(go) != IIndex.end()) {
+                const int j = IIndex[go];
+                gotoTable[{std::to_string(i), v}] = std::to_string(j);
+            }
+        }
+    }
+    // print GOTO
+    utils::coutWithColor("GOTO: ", constants::color::RED_TEXT) << std::endl;
+    std::cout << std::left << std::setw(5) << "#";
+    for(const auto& v: G.V) {
+        if(v != "Program'") {
+            std::cout << std::left << std::setw(21) << v;
+        }
+    }
+    std::cout << std::endl;
+    for(int i = 0; i < IIndexSize; i++) {
+        std::cout << std::setw(5) << i;
+        for(const auto& v: G.V) {
+            if(v != "Program'") {
+                std::cout << std::left << std::setw(21) << gotoTable[{std::to_string(i), v}];
+            }
+        }
+        std::cout << std::endl;
+    }
+    // 3 find ACTION
+    for(auto & I: C.I) {
+        const int i = IIndex[I];
+        for(auto [pIndex, dotIndex]: I.items) {
+            // 1 Ii A -> α·aβ, GOTO[IIndex(Ii), a] = j, a in T => ACTION[IIndex(Ii), a] = sj
+            if(dotIndex < G.P[pIndex].R.size()) {
+                auto a = G.P[pIndex].R[dotIndex];
+                if(std::find(G.T.begin(), G.T.end(), a) != G.T.end()) {
+                    actionTable[{std::to_string(i), a}] = "s"+std::to_string(IIndex[I.go(G, a)]);
+                }
+            }
+            else {
+                auto p = G.P[pIndex];
+                if(p.L == "Program'" && p.R[0] == "Program" && dotIndex == 1) {
+                    // 3 Ii S' -> S· => ACTION[i, $] = acc
+                    actionTable[{std::to_string(i), "$"}] = "acc";
+                }
+                else {
+                    // 2 Ii A -> α· => a in FOLLOW(A), ACTION[i, a] = A -> α
+                    auto followA = follow[p.L];
+                    for(const auto& a : followA) {
+                        actionTable[{std::to_string(i), a}] = "r"+std::to_string(pIndex);
+                    }
+                }
+            }
+        }
+    }
+    // print ACTION
+    utils::coutWithColor("ACTION: ", constants::color::RED_TEXT) << std::endl;
+    std::cout << std::left << std::setw(5) << "#";
+    for(const auto& t: G.T) {
+        std::cout << std::left << std::setw(10) << t;
+    }
+    std::cout << std::left << std::setw(10) << "$";
+    std::cout << std::endl;
+    for(int i = 0; i < IIndexSize; i++) {
+        std::cout << std::setw(5) << i;
+        for(const auto& t: G.T) {
+            std::cout << std::left << std::setw(10) << actionTable[{std::to_string(i), t}];
+        }
+        std::cout << std::left << std::setw(10) << actionTable[{std::to_string(i), "$"}];
+        std::cout << std::endl;
+    }
 }

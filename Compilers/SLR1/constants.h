@@ -9,7 +9,6 @@
 
 namespace constants {
     const std::string EPSILON = "ε";
-
     namespace color {
         const std::string DEFAULT_TEXT = "\033[0m";
         const std::string RED_TEXT = "\033[1;31m";
@@ -19,7 +18,6 @@ namespace constants {
         const std::string CARMINE_TEXT = "\033[0;35m";
         const std::string CYAN_TEXT = "\033[0;36m";
     }
-
 }
 
 #endif //SLR1_CONSTANTS_H

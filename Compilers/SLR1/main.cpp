@@ -11,7 +11,6 @@
 
 int main() {
     std::string contents;
-
     std::ifstream file("source.txt");
     if(file.is_open()) {
         std::stringstream buffer;

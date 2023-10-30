@@ -11,7 +11,6 @@
 
 namespace utils {
     std::ostream& coutWithColor(std::string s, const std::string color);
-
 }
 
 #endif //SLR1_UTILS_H

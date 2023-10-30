@@ -1,0 +1,23 @@
+int add(int x, int y) {
+    return x + y;
+}
+
+int main() {
+    int a = 1;
+    int b = 2;
+    int c = add(a, b);
+    string d = "string";
+    if(a == 1) {
+        a = 2;
+    }
+    else if(a != 2) {
+        a = 3;
+    }
+    while(b == 2) {
+        b = b + 1;
+    }
+    if(d == "string") {
+        d = "gnirts";
+    }
+    return 0;
+}

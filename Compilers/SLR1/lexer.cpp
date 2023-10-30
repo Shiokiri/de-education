@@ -5,22 +5,18 @@
 #include "lexer.h"
 
 auto lexicalAnalysis(std::string code) -> std::vector<std::pair<std::string, std::string>>  {
-    // TODO: vector -> set
     std::vector<std::string> keywords = {"int", "string", "return", "if", "while"};
     std::vector<std::string> operators = {"+", "-", "*", "/", "=", "==", "!="};
     std::vector<std::string> delimiters = {"{", "}", "(", ")", ",", ";"};
-
     // first: token
     // second: type { keywords, operators, delimiters, literal, identifier }
     std::vector<std::pair<std::string, std::string>> tokens = {};
-
     auto checkStringInStringVector =
         [](std::string searchString,const std::vector<std::string> &stringVector) -> bool {
         auto it = std::find(stringVector.begin(), stringVector.end(), searchString);
         return it != stringVector.end();
     };
     int index = 0;
-
     while(index < code.length()) {
         std::string codeIndex(1, code[index]);
         // space
@@ -80,6 +76,5 @@ auto lexicalAnalysis(std::string code) -> std::vector<std::pair<std::string, std
             index++;
         }
     }
-
     return tokens;
 }
