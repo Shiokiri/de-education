@@ -1,5 +1,13 @@
 int add(int x, int y) {
-    return x + y;
+    return (x + y*x*99) / 10 + 10000 - 23333 + (6666 - 9999) * 1111;
+}
+
+string qaqaq() {
+    return "qaqaq";
+}
+
+string qwqwqwqwqwq(string x) {
+    return x;
 }
 
 int main() {
@@ -9,15 +17,38 @@ int main() {
     string d = "string";
     if(a == 1) {
         a = 2;
+        if(a == 2) {
+            while(a == 2) {
+                a = 3;
+                if(a != 10) {
+                    a = add(b, c);
+                }
+                while(a == 20) {
+                    if(b != 10000) {
+                        int e = add(b, c);
+                    }
+                    else {
+                        int f = add(e, d);
+                        string s = "int f = add(e, d);";
+                    }
+                }
+            }
+        }
+        else {
+            a = 4;
+        }
     }
-    else if(a != 2) {
+    else {
         a = 3;
     }
     while(b == 2) {
         b = b + 1;
     }
     if(d == "string") {
-        d = "gnirts";
+        d = "QAQ";
+        string qwq = "QWQ";
     }
+    string qaq = qaqaq();
+    string qwq = qwqwqwqwqwq();
     return 0;
 }

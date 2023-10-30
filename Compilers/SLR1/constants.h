@@ -17,6 +17,9 @@ namespace constants {
         const std::string BLUE_TEXT = "\033[0;34m";
         const std::string CARMINE_TEXT = "\033[0;35m";
         const std::string CYAN_TEXT = "\033[0;36m";
+        const std::string LIGHT_BLUE_TEXT = "\033[94m";
+        const std::string LIGHT_GREEN_TEXT = "\033[92m";
+        const std::string LIGHT_RED_TEXT = "\033[91m";
     }
 }
 

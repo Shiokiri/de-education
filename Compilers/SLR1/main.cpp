@@ -6,8 +6,6 @@
 
 #include "lexer.h"
 #include "parser.h"
-#include "constants.h"
-#include "utils.h"
 
 int main() {
     std::string contents;
@@ -21,17 +19,8 @@ int main() {
         std::cerr << "Unable to open file" << std::endl;
         return 0;
     }
-
     const auto tokens = lexicalAnalysis(contents);
-    // print tokens
-    utils::coutWithColor("Tokens:", constants::color::RED_TEXT) << std::endl;
-    for(const auto& token : tokens) {
-        std::cout << "[" + token.first + " " + token.second + "] ";
-    }
-    std::cout << std::endl;
-
     std::unique_ptr<Parser> parser = std::make_unique<Parser>(std::move(tokens));
     parser->syntaxAnalysis();
-
     return 0;
 }

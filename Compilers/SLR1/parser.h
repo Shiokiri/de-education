@@ -150,7 +150,7 @@ public:
         G.S = "Program";
         G.V = {"Program", "FunctionDeclaration", "ArgumentList", "BlockStatement",
                "Type", "ArithmeticExpression", "BoolExpression",
-               "ArithmeticOperator", "ComparisonOperator"};
+               "ArithmeticOperator", "ComparisonOperator", "FunctionId", "ActualArgumentList"};
         G.T = {"identifier", "literal",
                "(", ")", "{", "}", ",", ";", "=",
                "while", "if", "else", "return",
@@ -165,10 +165,21 @@ public:
                 {"ArgumentList", {"Type", "identifier"}},
                 {"ArgumentList", {"Type", "identifier", ",", "ArgumentList"}},
 
+                {"FunctionId", {"identifier", "(", ")"}},
+                {"FunctionId", {"identifier", "(", "ActualArgumentList", ")"}},
+
+                {"ActualArgumentList", {"ArithmeticExpression"}},
+                {"ActualArgumentList", {"ArithmeticExpression", ",", "ActualArgumentList"}},
+
                 {"BlockStatement", {"BlockStatement", "BlockStatement"}},
+
                 {"BlockStatement", {"Type", "identifier", ";"}},
                 {"BlockStatement", {"Type", "identifier", "=", "ArithmeticExpression", ";"}},
                 {"BlockStatement", {"identifier", "=", "ArithmeticExpression", ";"}},
+
+                {"BlockStatement", {"Type", "identifier", "=", "FunctionId", ";"}},
+                {"BlockStatement", {"identifier", "=", "FunctionId", ";"}},
+
                 {"BlockStatement", {"while", "(", "BoolExpression", ")", "{", "BlockStatement", "}"}},
                 {"BlockStatement", {"if", "(", "BoolExpression", ")", "{", "BlockStatement", "}"}},
                 {"BlockStatement", {"if", "(", "BoolExpression", ")", "{", "BlockStatement", "}", "else", "{", "BlockStatement", "}"}},

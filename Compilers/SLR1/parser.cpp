@@ -11,24 +11,33 @@ void Parser::syntaxAnalysis() {
     // initialization
     tokens.push_back({"$", "$"});
     std::stack<std::string> stack;
+    std::vector<std::string> symbol;
     stack.push("0");
+    symbol.push_back("$");
     int tokenIndex = 0;
     int step = 1;
+    // print tokens
+    utils::coutWithColor("Tokens:", constants::color::RED_TEXT) << std::endl;
+    for(const auto& token : tokens) {
+        std::cout << "[" + token.first + " " + token.second + "] ";
+    }
+    std::cout << std::endl;
     // begin analysis
-    auto getNextTokenType = [&]() -> std::string {
-        if(tokenIndex == tokens.size()) return tokens[tokens.size()-1].first;
-        std::pair pair = tokens[tokenIndex++];
+    auto getTokenType = [this](int index) -> std::string {
+        if(index >= tokens.size()) return tokens[tokens.size()-1].first;
+        std::pair pair = tokens[index];
         if(pair.second == "identifier" || pair.second == "literal") {
             return pair.second;
         } else {
             return pair.first;
         }
     };
-    std::string a = getNextTokenType();
+    std::string a = getTokenType(tokenIndex);
     while(true) {
         std::string s = stack.top();
+        utils::coutWithColor("----------------------------------------", constants::color::YELLOW_TEXT) << std::endl;
         utils::coutWithColor("Step: "+std::to_string(step++), constants::color::CARMINE_TEXT) << std::endl;
-        utils::coutWithColor("Status: ", constants::color::BLUE_TEXT);
+        utils::coutWithColor("Status: ", constants::color::LIGHT_RED_TEXT);
         std::stack<std::string> tempStack;
         while(!stack.empty()) {
             tempStack.push(stack.top());
@@ -40,17 +49,32 @@ void Parser::syntaxAnalysis() {
             tempStack.pop();
         }
         std::cout << std::endl;
-        std::cout << actionTable[{s, a}] << std::endl;
+        utils::coutWithColor("Symbol: ", constants::color::LIGHT_BLUE_TEXT);
+        for(const auto& s: symbol) {
+            std::cout << s << " ";
+        }
+        std::cout << std::endl;
+        utils::coutWithColor("Input: ", constants::color::LIGHT_GREEN_TEXT);
+        for(int i = tokenIndex; i < tokens.size(); i++) {
+            std::cout << getTokenType(i) << " ";
+        }
+        std::cout << std::endl;
+        utils::coutWithColor(actionTable[{s, a}] + ": ", constants::color::BLUE_TEXT);
         if(auto act = actionTable[{s, a}]; act[0] == 's') {
             // shift
             stack.push(act.erase(0, 1));
-            a = getNextTokenType();
+            symbol.push_back(a);
+            std::cout << "Shift " + a << std::endl;
+            tokenIndex++;
+            a = getTokenType(tokenIndex);
         } else if(act[0] == 'r') {
             // reduce
-            Product p = G.P[std::stoi(act.erase(0, 1))]; // shift A -> β => pop|β|
+            const int pIndex = std::stoi(act.erase(0, 1));
+            Product p = G.P[pIndex]; // shift A -> β => pop|β|
             for(int i = 0; i < p.R.size(); i++) {
                 if(!stack.empty()) {
                     stack.pop();
+                    symbol.pop_back();
                 } else {
                     // error
                     goto GRAMMAR_ERROR;
@@ -58,10 +82,12 @@ void Parser::syntaxAnalysis() {
             }
             std::string t = stack.top();
             stack.push(gotoTable[{t, p.L}]); // GOTO[t, A]
+            symbol.push_back(p.L);
+            std::cout << "Reduce Product " + std::to_string(pIndex) + ": ";
             p.printProduct();
         } else if(act == "acc") {
             // accept
-            utils::coutWithColor("complete syntax analysis", constants::color::CYAN_TEXT) << std::endl;
+            utils::coutWithColor("Accept! Syntax analysis completed.", constants::color::CYAN_TEXT) << std::endl;
             break;
         } else {
             GRAMMAR_ERROR:
