@@ -4,6 +4,7 @@
 
 #include "utils.h"
 
-std::ostream& utils::coutWithColor(std::string s, const std::string color) {
-    std::cout << color << s << constants::color::DEFAULT_TEXT;
+std::ostream& utils::print(std::string s, std::string const color) {
+    std::ostream& os = std::cout;
+    return os << color << s << constants::color::DEFAULT_TEXT;
 }

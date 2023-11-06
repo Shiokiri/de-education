@@ -10,7 +10,7 @@
 #include "constants.h"
 
 namespace utils {
-    std::ostream& coutWithColor(std::string s, const std::string color);
+    std::ostream& print(std::string s, const std::string color);
 }
 
 #endif //SLR1_UTILS_H

@@ -47,19 +47,19 @@ struct Grammar {
     std::vector<std::string> T;
     std::vector<Product> P;
     void printGrammar() const {
-        utils::coutWithColor("Grammar: ", constants::color::RED_TEXT) << std::endl;
-        utils::coutWithColor("S: ", constants::color::GREEN_TEXT) << S << std::endl;
-        utils::coutWithColor("V: ", constants::color::GREEN_TEXT);
+        utils::print("Grammar: ", constants::color::RED_TEXT) << std::endl;
+        utils::print("S: ", constants::color::GREEN_TEXT) << S << std::endl;
+        utils::print("V: ", constants::color::GREEN_TEXT);
         for(auto const& v: V) {
             std::cout << v + " ";
         }
         std::cout << std::endl;
-        utils::coutWithColor("T: ", constants::color::GREEN_TEXT);
+        utils::print("T: ", constants::color::GREEN_TEXT);
         for(auto const& t: T) {
             std::cout << t + " ";
         }
         std::cout << std::endl;
-        utils::coutWithColor("P: ", constants::color::GREEN_TEXT) << std::endl;
+        utils::print("P: ", constants::color::GREEN_TEXT) << std::endl;
         int index = 0;
         for(auto const& p: P) {
             std::cout << index++ << " ";
@@ -116,7 +116,7 @@ struct TypeI {
     }
     void print(int const index = -1) const {
         // TODO: need gcc v13 to support std::format in C++20
-        utils::coutWithColor("I"+std::to_string(index)+": ", constants::color::GREEN_TEXT);
+        utils::print("I" + std::to_string(index) + ": ", constants::color::GREEN_TEXT);
         std::cout << "| ";
         for(auto const& item: items) {
             auto const& [p, d] = item;

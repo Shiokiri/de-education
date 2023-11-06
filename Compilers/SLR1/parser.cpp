@@ -12,13 +12,13 @@ void Parser::syntaxAnalysis() {
     symbol.push_back("$");
     int tokenIndex = 0, step = 1;
     // print tokens
-    utils::coutWithColor("Tokens:", constants::color::RED_TEXT) << std::endl;
+    utils::print("Tokens:", constants::color::RED_TEXT) << std::endl;
     for(const auto& token : tokens) {
         std::cout << "[" + token.first + " " + token.second + "] ";
     }
     std::cout << std::endl;
     // begin analysis
-    utils::coutWithColor("Syntax Analysis: ", constants::color::RED_TEXT) << std::endl;
+    utils::print("Syntax Analysis: ", constants::color::RED_TEXT) << std::endl;
     auto getTokenType = [this](int const index) {
         if(index >= tokens.size()) {
             return tokens[tokens.size()-1].first;
@@ -34,26 +34,26 @@ void Parser::syntaxAnalysis() {
     while(true) {
         std::string const s = stack.back();
         for(int i = 0; i <= 200; i++) {
-            utils::coutWithColor("-", constants::color::YELLOW_TEXT);
+            utils::print("-", constants::color::YELLOW_TEXT);
         }
         std::cout << std::endl;
-        utils::coutWithColor("Step: "+std::to_string(step++), constants::color::CARMINE_TEXT) << std::endl;
-        utils::coutWithColor("Status: ", constants::color::LIGHT_RED_TEXT);
+        utils::print("Step: " + std::to_string(step++), constants::color::CARMINE_TEXT) << std::endl;
+        utils::print("Status: ", constants::color::LIGHT_RED_TEXT);
         for(auto const& sta : stack) {
             std::cout << sta << " ";
         }
         std::cout << std::endl;
-        utils::coutWithColor("Symbol: ", constants::color::LIGHT_BLUE_TEXT);
+        utils::print("Symbol: ", constants::color::LIGHT_BLUE_TEXT);
         for(auto const& sym : symbol) {
             std::cout << sym << " ";
         }
         std::cout << std::endl;
-        utils::coutWithColor("Input: ", constants::color::LIGHT_GREEN_TEXT);
+        utils::print("Input: ", constants::color::LIGHT_GREEN_TEXT);
         for(int i = tokenIndex; i < tokens.size(); i++) {
             std::cout << getTokenType(i) << " ";
         }
         std::cout << std::endl;
-        utils::coutWithColor(actionTable[{s, a}] + ": ", constants::color::BLUE_TEXT);
+        utils::print(actionTable[{s, a}] + ": ", constants::color::BLUE_TEXT);
         if(auto act = actionTable[{s, a}]; act[0] == 's') {
             // shift
             stack.push_back(act.erase(0, 1));
@@ -78,11 +78,11 @@ void Parser::syntaxAnalysis() {
             p.printProduct();
         } else if(act == "acc") {
             // accept
-            utils::coutWithColor("Accept! Syntax analysis completed.", constants::color::CYAN_TEXT) << std::endl;
+            utils::print("Accept! Syntax analysis completed.", constants::color::CYAN_TEXT) << std::endl;
             break;
         } else {
             // error
-            utils::coutWithColor("Error!", constants::color::YELLOW_TEXT) << std::endl;
+            utils::print("Error!", constants::color::YELLOW_TEXT) << std::endl;
             break;
         }
     }
@@ -140,7 +140,7 @@ void Parser::getFirst() {
         }
     }
     // print FIRST set
-    utils::coutWithColor("FIRST set: ", constants::color::RED_TEXT) << std::endl;
+    utils::print("FIRST set: ", constants::color::RED_TEXT) << std::endl;
     for (auto const& pair : first) {
         std::cout << "FIRST[" << std::quoted(pair.first) << "]: { ";
         for(auto const& s : pair.second) {
@@ -195,7 +195,7 @@ void Parser::getFollow() {
         }
     }
     // print FOLLOW set
-    utils::coutWithColor("FOLLOW set: ", constants::color::RED_TEXT) << std::endl;
+    utils::print("FOLLOW set: ", constants::color::RED_TEXT) << std::endl;
     for (auto const& pair : follow) {
         std::cout << "FOLLOW[" << std::quoted(pair.first) << "]: { ";
         for(auto const& s : pair.second ) {
@@ -238,7 +238,7 @@ void Parser::getSLR1Table() {
         IIndex[I] = IIndexSize++;
     }
     // print C
-    utils::coutWithColor("C = {I1, I2, ..., In}: ", constants::color::RED_TEXT) << std::endl;
+    utils::print("C = {I1, I2, ..., In}: ", constants::color::RED_TEXT) << std::endl;
     for(auto const& I: C.I) {
         I.print(IIndex[I]);
         for(auto const& item: I.items) {
@@ -257,7 +257,7 @@ void Parser::getSLR1Table() {
         }
     }
     // print GOTO
-    utils::coutWithColor("GOTO: ", constants::color::RED_TEXT) << std::endl;
+    utils::print("GOTO: ", constants::color::RED_TEXT) << std::endl;
     std::cout << std::left << std::setw(5) << "#";
     for(auto const& v: G.V | std::views::filter([](auto const& v) { return v != "Program'"; })) {
         std::cout << std::left << std::setw(20) << v;
@@ -298,7 +298,7 @@ void Parser::getSLR1Table() {
         }
     }
     // print ACTION
-    utils::coutWithColor("ACTION: ", constants::color::RED_TEXT) << std::endl;
+    utils::print("ACTION: ", constants::color::RED_TEXT) << std::endl;
     std::cout << std::left << std::setw(5) << "#";
     for(auto const& t: G.T) {
         std::cout << std::left << std::setw(10) << t;
