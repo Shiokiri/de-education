@@ -15,6 +15,6 @@
 #include "constants.h"
 #include "utils.h"
 
-auto lexicalAnalysis(std::string) -> std::vector<std::pair<std::string, std::string>>;
+auto lexicalAnalysis(std::string const&) -> std::vector<std::pair<std::string, std::string>>;
 
 #endif //SLR1_LEXER_H

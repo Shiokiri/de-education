@@ -1,0 +1,3 @@
+/home/shiokiri/de-education/Computer Graphics/box_shooter/cmake-build-debug/CMakeFiles/box_shooter.dir
+/home/shiokiri/de-education/Computer Graphics/box_shooter/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/shiokiri/de-education/Computer Graphics/box_shooter/cmake-build-debug/CMakeFiles/rebuild_cache.dir

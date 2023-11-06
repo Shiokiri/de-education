@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <ranges>
 #include <vector>
 #include <stack>
 #include <set>
@@ -20,13 +21,13 @@
 struct Product {
     std::string L;
     std::vector<std::string> R;
-    bool operator < (const Product &other) const {
+    bool operator < (Product const &other) const {
         if (L != other.L) {
             return L < other.L;
         }
         return R < other.R;
     }
-    void printProduct(const int dot = -1) const {
+    void printProduct(int const dot = -1) const {
         std::cout << L << " -> ";
         for(int i = 0; i < R.size(); i++) {
             if(i == dot) {
@@ -49,18 +50,18 @@ struct Grammar {
         utils::coutWithColor("Grammar: ", constants::color::RED_TEXT) << std::endl;
         utils::coutWithColor("S: ", constants::color::GREEN_TEXT) << S << std::endl;
         utils::coutWithColor("V: ", constants::color::GREEN_TEXT);
-        for(const auto& v: V) {
+        for(auto const& v: V) {
             std::cout << v + " ";
         }
         std::cout << std::endl;
         utils::coutWithColor("T: ", constants::color::GREEN_TEXT);
-        for(const auto& t: T) {
+        for(auto const& t: T) {
             std::cout << t + " ";
         }
         std::cout << std::endl;
         utils::coutWithColor("P: ", constants::color::GREEN_TEXT) << std::endl;
         int index = 0;
-        for(const auto& p: P) {
+        for(auto const& p: P) {
             std::cout << index++ << " ";
             p.printProduct();
         }
@@ -68,28 +69,27 @@ struct Grammar {
 };
 struct Item {
     int pIndex, dotIndex;
-    bool operator < (const Item& other) const {
+    bool operator < (Item const& other) const {
         return pIndex == other.pIndex ? dotIndex < other.dotIndex : pIndex < other.pIndex;
     }
 };
 struct typeI {
     std::set<Item> items;
-    bool operator < (const typeI& other) const {
+    bool operator < (typeI const& other) const {
         return items < other.items;
     }
-    typeI closure(Grammar &G) const {
+    typeI closure(Grammar const &G) const {
         typeI J = {items};
         bool changed = true;
         while(changed) {
             changed = false;
-            const int size = J.items.size();
-            for(const auto [pIndex, dotIndex] : J.items) {
+            int const size = J.items.size();
+            for(auto const [pIndex, dotIndex] : J.items) {
                 if(dotIndex == G.P[pIndex].R.size()) continue;
-                auto B = G.P[pIndex].R[dotIndex];
+                auto const B = G.P[pIndex].R[dotIndex];
                 if(std::find(G.V.begin(), G.V.end(), B) != G.V.end()) {
                     for(int i = 0; i < G.P.size(); i++) {
-                        auto p = G.P[i];
-                        if(B == p.L) {
+                        if(B == G.P[i].L) {
                             if(J.items.find(Item(i, 0)) == J.items.end()) {
                                 J.items.insert(Item(i, 0));
                             }
@@ -101,12 +101,12 @@ struct typeI {
         }
         return typeI(J);
     }
-    typeI go(Grammar &G, std::string X) const {
+    typeI go(Grammar const &G, std::string const X) const {
         typeI go = {};
-        for(const auto [pIndex, dotIndex] : items) {
+        for(auto const& [pIndex, dotIndex] : items) {
             // A -> α·Bβ
             if(dotIndex == G.P[pIndex].R.size()) continue;
-            auto B = G.P[pIndex].R[dotIndex];
+            auto const B = G.P[pIndex].R[dotIndex];
             if(B == X) {
                 // A -> αB·β
                 go.items.insert(Item(pIndex, dotIndex+1));
@@ -114,12 +114,12 @@ struct typeI {
         }
         return go.closure(G);
     }
-    void print(const int index = -1) const {
+    void print(int const index = -1) const {
         // TODO: need gcc v13 to support std::format in C++20
         utils::coutWithColor("I"+std::to_string(index)+": ", constants::color::GREEN_TEXT);
         std::cout << "| ";
-        for(auto & item: items) {
-            auto [p, d] = item;
+        for(auto const& item: items) {
+            auto const& [p, d] = item;
             std::cout << p << " " << d << " | ";
         }
         std::cout << std::endl;
@@ -127,7 +127,7 @@ struct typeI {
 };
 struct typeC {
     std::set<typeI> I;
-    bool operator < (const typeC& other) const {
+    bool operator < (typeC const& other) const {
         return I < other.I;
     }
 };

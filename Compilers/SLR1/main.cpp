@@ -19,7 +19,7 @@ int main() {
         std::cerr << "Unable to open file" << std::endl;
         return 0;
     }
-    const auto tokens = lexicalAnalysis(contents);
+    auto const tokens = lexicalAnalysis(contents);
     std::unique_ptr<Parser> parser = std::make_unique<Parser>(std::move(tokens));
     parser->syntaxAnalysis();
     return 0;

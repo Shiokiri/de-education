@@ -49,6 +49,6 @@ int main() {
         string qwq = "QWQ";
     }
     string qaq = qaqaq();
-    string qwq = qwqwqwqwqwq();
+    string qwq = qwqwqwqwqwq("qwqwq");
     return 0;
 }
