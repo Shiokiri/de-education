@@ -5,9 +5,6 @@
 #include "parser.h"
 
 void Parser::syntaxAnalysis() {
-    getFirst();
-    getFollow();
-    getSLR1Table();
     // initialization
     tokens.push_back({"$", "$"});
     std::vector<std::string> stack, symbol;
@@ -36,7 +33,10 @@ void Parser::syntaxAnalysis() {
     std::string a = getTokenType(tokenIndex);
     while(true) {
         std::string const s = stack.back();
-        utils::coutWithColor("----------------------------------------", constants::color::YELLOW_TEXT) << std::endl;
+        for(int i = 0; i <= 200; i++) {
+            utils::coutWithColor("-", constants::color::YELLOW_TEXT);
+        }
+        std::cout << std::endl;
         utils::coutWithColor("Step: "+std::to_string(step++), constants::color::CARMINE_TEXT) << std::endl;
         utils::coutWithColor("Status: ", constants::color::LIGHT_RED_TEXT);
         for(auto const& sta : stack) {
@@ -101,7 +101,7 @@ void Parser::getFirst() {
     }
     // 3 (X -> ε) => ε in FIRST[X]
     // ε in P.R => (P.L, ε)
-    for(const auto& p: G.P) {
+    for(auto const& p: G.P) {
         if(std::find(p.R.begin(), p.R.end(),constants::EPSILON) != p.R.end()) {
             first[p.L].insert(constants::EPSILON);
         }
@@ -115,7 +115,7 @@ void Parser::getFirst() {
         for (auto const& p: G.P) {
             auto findEpsilonIndex = [&]() {
                 for (int i = 0; i <= p.R.size() - 1; i++) {
-                    auto first_Yi = first[p.R[i]];
+                    auto const first_Yi = first[p.R[i]];
                     // ε not in FIRST[Y(1-i-1)]
                     if(first_Yi.find(constants::EPSILON) == first_Yi.end()) {
                         return i;
@@ -143,7 +143,7 @@ void Parser::getFirst() {
     utils::coutWithColor("FIRST set: ", constants::color::RED_TEXT) << std::endl;
     for (auto const& pair : first) {
         std::cout << "FIRST[" << std::quoted(pair.first) << "]: { ";
-        for(auto const& s : pair.second ) {
+        for(auto const& s : pair.second) {
             std::cout << std::quoted(s) << " ";
         }
         std::cout << "}"<< std::endl;
@@ -211,14 +211,14 @@ void Parser::getSLR1Table() {
     G.V.push_back(G.S);
     G.P.push_back({"Program'", {"Program"}});
     // find closure of (Program' -> ·Program)
-    typeI start = {{Item(G.P.size()-1, 0)}}; // Program' -> ·Program
+    TypeI start = {{{static_cast<int>(G.P.size()-1), 0}}}; // Program' -> ·Program
     // 1 find C of G'
-    typeC C = {{start.closure(G)}};
+    TypeC C = {{start.closure(G)}};
     bool changed = true;
     while(changed) {
         changed = false;
         int const size = C.I.size();
-        std::set<typeI> temp = {};
+        std::set<TypeI> temp = {};
         for(auto const& I: C.I) {
             for(auto const& X: G.V) {
                 temp.insert(I.go(G, X));
@@ -232,26 +232,26 @@ void Parser::getSLR1Table() {
         }
         changed = C.I.size() != size || changed;
     }
-    std::map<typeI, int> IIndex;
+    std::map<TypeI, int> IIndex;
     int IIndexSize = 0;
     for(auto const& I: C.I) {
         IIndex[I] = IIndexSize++;
     }
     // print C
     utils::coutWithColor("C = {I1, I2, ..., In}: ", constants::color::RED_TEXT) << std::endl;
-    for(auto & I: C.I) {
+    for(auto const& I: C.I) {
         I.print(IIndex[I]);
-        for(const auto& item: I.items) {
-            auto p = G.P[item.pIndex];
+        for(auto const& item: I.items) {
+            auto const p = G.P[item.pIndex];
             p.printProduct(item.dotIndex);
         }
     }
     // 2 find GOTO
-    for(auto & I: C.I) {
-        for(const auto& v: G.V) {
-            const int i = IIndex[I];
-            if(const auto go = I.go(G, v); IIndex.find(go) != IIndex.end()) {
-                const int j = IIndex[go];
+    for(auto const& I: C.I) {
+        for(auto const& v: G.V) {
+            int const i = IIndex[I];
+            if(auto const go = I.go(G, v); IIndex.find(go) != IIndex.end()) {
+                int const j = IIndex[go];
                 gotoTable[{std::to_string(i), v}] = std::to_string(j);
             }
         }
@@ -259,13 +259,13 @@ void Parser::getSLR1Table() {
     // print GOTO
     utils::coutWithColor("GOTO: ", constants::color::RED_TEXT) << std::endl;
     std::cout << std::left << std::setw(5) << "#";
-    for(const auto& v: G.V | std::views::filter([](const auto& v) { return v != "Program'"; })) {
+    for(auto const& v: G.V | std::views::filter([](auto const& v) { return v != "Program'"; })) {
         std::cout << std::left << std::setw(20) << v;
     }
     std::cout << std::endl;
     for(int i = 0; i < IIndexSize; i++) {
         std::cout << std::setw(5) << i;
-        for(const auto& v: G.V | std::views::filter([](const auto& v) { return v != "Program'"; })) {
+        for(auto const& v: G.V | std::views::filter([](auto const& v) { return v != "Program'"; })) {
                 std::cout << std::left << std::setw(20) << gotoTable[{std::to_string(i), v}];
         }
         std::cout << std::endl;

@@ -73,17 +73,17 @@ struct Item {
         return pIndex == other.pIndex ? dotIndex < other.dotIndex : pIndex < other.pIndex;
     }
 };
-struct typeI {
+struct TypeI {
     std::set<Item> items;
-    bool operator < (typeI const& other) const {
+    bool operator < (TypeI const& other) const {
         return items < other.items;
     }
-    typeI closure(Grammar const &G) const {
-        typeI J = {items};
+    [[nodiscard]] TypeI closure(Grammar const &G) const {
+        TypeI J = {items};
         bool changed = true;
         while(changed) {
             changed = false;
-            int const size = J.items.size();
+            auto const size = J.items.size();
             for(auto const [pIndex, dotIndex] : J.items) {
                 if(dotIndex == G.P[pIndex].R.size()) continue;
                 auto const B = G.P[pIndex].R[dotIndex];
@@ -99,10 +99,10 @@ struct typeI {
             }
             changed = J.items.size() != size || changed;
         }
-        return typeI(J);
+        return J;
     }
-    typeI go(Grammar const &G, std::string const X) const {
-        typeI go = {};
+    [[nodiscard]] TypeI go(Grammar const &G, std::string const& X) const {
+        TypeI go = {};
         for(auto const& [pIndex, dotIndex] : items) {
             // A -> α·Bβ
             if(dotIndex == G.P[pIndex].R.size()) continue;
@@ -125,9 +125,9 @@ struct typeI {
         std::cout << std::endl;
     }
 };
-struct typeC {
-    std::set<typeI> I;
-    bool operator < (typeC const& other) const {
+struct TypeC {
+    std::set<TypeI> I;
+    bool operator < (TypeC const& other) const {
         return I < other.I;
     }
 };
@@ -142,11 +142,11 @@ private:
         return std::hash<std::string>{}(p.first) ^ std::hash<std::string>{}(p.second);
     })>;
     pair_umap_string actionTable, gotoTable;
-    typeC C;
+    TypeC C;
 public:
-    Parser(const std::vector<std::pair<std::string, std::string>>&& tokens)
-    : tokens(std::move(tokens))
-    {
+    Parser() = delete;
+    template <typename T>
+    explicit Parser(T&& tokens) : tokens(std::forward<T>(tokens)) {
         G.S = "Program";
         G.V = {"Program", "FunctionDeclaration", "ArgumentList", "BlockStatement",
                "Type", "ArithmeticExpression", "BoolExpression",
@@ -207,7 +207,17 @@ public:
                 {"ArithmeticOperator", {"/"}} };
         // print G
         G.printGrammar();
+        // initialization
+        getFirst();
+        getFollow();
+        getSLR1Table();
     };
+    ~Parser() = default;
+    Parser(const Parser& other) = default;
+    Parser& operator = (const Parser& other) = default;
+    Parser(Parser&& other) noexcept = default;
+    Parser& operator = (Parser&& other) noexcept = default;
+    
     void syntaxAnalysis();
     void getFirst();
     void getFollow();
