@@ -164,24 +164,19 @@ void Parser::getFollow() {
         for (auto const& p : G.P) {
             for(int i = 0; i <= p.R.size()-1; i++) {
                 if(std::find(G.V.begin(), G.V.end(), p.R[i]) != G.V.end()) {
-                    const int size = first[p.R[i]].size();
+                    int const size = first[p.R[i]].size();
                     if(i < p.R.size()-1) {
-                        [&]() {
-                            for(int j = i+1; j <= p.R.size()-1; j++) {
-                                if(first[p.R[j]].find(constants::EPSILON) == first[p.R[j]].end()) {
-                                    // 2 A -> αBβ => a != ε in FIRST[β], a in FOLLOW[B]
-                                    // aB[sentence] find first of sentence
-                                    for(auto const& f : first[p.R[j]]) {
-                                        follow[p.R[i]].insert(f); // f != ε already
-                                    }
-                                    return;
-                                }
-                            }
-                            // 3 A -> αBβ && ε in FIRST[β] => a in FOLLOW[A], a in FOLLOW[B]
-                            for(const auto& f : follow[p.L]) {
+                        // 2 A -> αBβ => a != ε in FIRST[β], a in FOLLOW[B]
+                        for(auto const& f : first[p.R[i+1]]
+                            | std::views::filter([](auto f) { return f != constants::EPSILON; })) {
+                            follow[p.R[i]].insert(f);
+                        }
+                        // 3 A -> αBβ && ε in FIRST[β] => a in FOLLOW[A], a in FOLLOW[B]
+                        if(auto const& beta = first[p.R[i+1]]; beta.find(constants::EPSILON) != beta.end()) {
+                            for(auto const& f : follow[p.L]) {
                                 follow[p.R[i]].insert(f);
                             }
-                        }();
+                        }
                     }
                     else {
                         // 3 A -> αB => a in FOLLOW[A], a in FOLLOW[B]

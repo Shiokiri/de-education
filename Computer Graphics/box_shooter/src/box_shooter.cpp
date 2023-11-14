@@ -59,6 +59,9 @@ int main()
 		for (auto &s : shapes)
 			s->draw(projection, camera->calculateViewMatrix());
 
+        // camera->keyControl(, deltaTime);
+
+
 		mainwindow->swapBuffers();
 	}
 	// clean
