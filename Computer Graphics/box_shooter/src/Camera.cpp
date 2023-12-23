@@ -50,5 +50,12 @@ glm::mat4 Camera::calculateViewMatrix()
 
 void Camera::mouseControl(glm::vec2 change)
 {
+    change *= turnSpeed;
+    yaw += change.x;
+    pitch += change.y;
 
+    if(pitch > 89.0f) pitch = 89.0f;
+    if(pitch < -89.0f) pitch = -89.0f;
+
+    this->update();
 }

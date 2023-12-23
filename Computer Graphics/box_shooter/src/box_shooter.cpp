@@ -37,7 +37,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	camera = new Camera(glm::vec3(-20.0f, 20.0f, -20.0f), glm::vec3(.0f, 1.0f, .0f), 45.0f, -30.0f, 5.0f, .5f);
+	camera = new Camera(glm::vec3(-20.0f, 20.0f, -20.0f), glm::vec3(.0f, 1.0f, .0f), 45.0f, -30.0f, 15.0f, .05f);
 
 	glm::mat4 projection = glm::perspective(45.0f, mainwindow->getBufferWidth() / mainwindow->getBufferHeight(), 0.01f, 100.0f);
 	// Loop until it is closed
@@ -52,15 +52,13 @@ int main()
 		glfwPollEvents();
 		process_keys();
 		camera->mouseControl(glm::vec2(mainwindow->getXchange(), mainwindow->getYchange()));
+        camera->keyControl(mainwindow->getKeys(), deltaTime);
 		// Clear window
 		glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		for (auto &s : shapes)
 			s->draw(projection, camera->calculateViewMatrix());
-
-        // camera->keyControl(, deltaTime);
-
 
 		mainwindow->swapBuffers();
 	}
@@ -113,8 +111,8 @@ void process_keys()
 	std::tie(posx, posy, mouse_clicked) = mainwindow->mouse_feedback();
 	if (mouse_clicked)
 	{
-
-		shapes.push_back(new Box(-20.0f, 20.0f, -20.0f));
+        auto cameraPosition = camera->getPosition();
+		shapes.push_back(new Box(cameraPosition.x, cameraPosition.y, cameraPosition.z));
 		auto origin = shapes.back()->getOrigin();
 		btCollisionShape *colShape = new btBoxShape(btVector3(1, 1, 1));
 		collisionShapes.push_back(colShape);
@@ -140,9 +138,6 @@ void process_keys()
 		btRigidBody *body = new btRigidBody(rbInfo);
 		btVector3 direction;
 		auto camera_dir = camera->get_front();
-
-		
-		std::cout << camera_dir.x << " " << camera_dir.y << " " << camera_dir.z << std::endl;
 		glm::vec3 mouse_dir = glm::normalize(glm::vec3(posx - 400, 300 - posy, 0));
 
 		direction.setX(camera_dir.x);

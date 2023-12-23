@@ -16,7 +16,8 @@ public:
 
     void keyControl(bool* keys, GLfloat deltaTime);
     void mouseControl(glm::vec2 change);
-        glm::vec3 get_front(){return front;};
+    glm::vec3 get_front() { return front; };
+    glm::vec3 getPosition() { return position; }
 
 private:
     glm::vec3 position;

@@ -1,6 +1,6 @@
 #include "Window.h"
 
-Window::Window() : width(800), height(600)
+Window::Window() : width(2400), height(1600)
 {
     for (std::size_t i = 0; i < 1024; i++)
         keys[i] = 0;
@@ -101,9 +101,8 @@ void Window::handleMouse(GLFWwindow *window, double xPos, double yPos)
         theWindow->lastY = yPos;
         theWindow->mouseFirstMoved = false;
     }
-
-    theWindow->xChange = xPos - theWindow->lastX;
-    theWindow->yChange = theWindow->lastY - yPos;
+    theWindow->xChange += xPos - theWindow->lastX;
+    theWindow->yChange += theWindow->lastY - yPos;
 
     theWindow->lastY = yPos;
     theWindow->lastX = xPos;
